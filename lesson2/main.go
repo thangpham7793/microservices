@@ -23,7 +23,7 @@ func main() {
 	hh := handlers.NewHello(l)
 	gb := handlers.NewGoodbye(l)
 
-	// like the controller in MVC
+	// like the controller/router in MVC
 	sm := http.NewServeMux()
 
 	sm.Handle("/", hh)
