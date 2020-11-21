@@ -36,9 +36,27 @@ func (ps *Products) ToJSON(w io.Writer) error {
 	return e.Encode(ps)
 }
 
+//FromJSON reads a json prod obj into a Product instance
+func (*Product) FromJSON(w io.ReadCloser) (*Product, error) {
+	d := json.NewDecoder(w)
+	var p Product
+	err := d.Decode(&p)
+	if err != nil {
+		return &p, err
+	}
+	return &p, nil
+}
+
 //GetProducts abstracts this from handlers and presents itself as a service
 func GetProducts() (Products, error) {
 	return ProductList, nil
+}
+
+//SaveProduct saves product and returns its id
+func SaveProduct(p *Product) (int, error) {
+	p.ID = len(ProductList) + 1
+	ProductList = append(ProductList, p)
+	return p.ID, nil
 }
 
 //ProductList dummy data
