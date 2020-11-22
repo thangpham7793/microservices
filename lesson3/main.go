@@ -4,6 +4,7 @@ package main
 
 import (
 	"context"
+	"lesson3/data"
 	"lesson3/handlers"
 	"lesson3/utils"
 	"log"
@@ -19,11 +20,12 @@ func main() {
 
 	// customise dependency (anything that implements the interface, in this case io.Writer)
 	l := log.New(os.Stdout, "product-api\t", log.LstdFlags)
+	m := data.InMemoryProductService{}
 
 	//dependency injections allow for reusable dependencies (logger for example)
 	hh := handlers.NewHello(l)
 	gb := handlers.NewGoodbye(l)
-	ph := handlers.NewProducts(l)
+	ph := handlers.NewProducts(l, m)
 
 	// like the controller/router in MVC
 	sm := http.NewServeMux()

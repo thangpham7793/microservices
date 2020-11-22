@@ -10,11 +10,12 @@ import (
 //Products defines API of a product handler
 type Products struct {
 	l *log.Logger
+	m data.ProductService
 }
 
 //NewProducts inits a new product handler
-func NewProducts(l *log.Logger) *Products {
-	return &Products{l}
+func NewProducts(l *log.Logger, m data.ProductService) *Products {
+	return &Products{l, m}
 }
 
 func (p *Products) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +31,7 @@ func (p *Products) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (p *Products) getProducts(w http.ResponseWriter, r *http.Request) {
 	//should this be an interface type ?
-	pl, err := data.GetProducts()
+	pl, err := p.m.GetProducts()
 	if err != nil {
 		http.Error(w, "could not retrieve products", http.StatusInternalServerError)
 	}
@@ -54,11 +55,12 @@ func (p *Products) saveProduct(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("%#v\n", *prod)
 
-	pID, err := data.SaveProduct(prod)
+	pID, err := p.m.SaveProduct(prod)
 	if err != nil {
 		http.Error(w, "could not save product", http.StatusInternalServerError)
 		return
 	}
+
 	w.WriteHeader(http.StatusCreated)
 	fmt.Fprintf(w, "saved product with id %d\n", pID)
 }

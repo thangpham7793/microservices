@@ -20,9 +20,10 @@ type Product struct {
 
 //tags make working with MongoDb so nice (no need to manually skip the fields) + reduces the payload sent over the wire as well
 
-//ProductModel defines methods of a valid prod model
-type ProductModel interface {
-	GetProducts() ([]*Product, error)
+//ProductService defines methods of a valid prod model
+type ProductService interface {
+	GetProducts() (Products, error)
+	SaveProduct(p *Product) (int, error)
 }
 
 //Products define a slice of pointers to product
@@ -47,13 +48,16 @@ func (*Product) FromJSON(w io.ReadCloser) (*Product, error) {
 	return &p, nil
 }
 
+//InMemoryProductService implements ProductService interface
+type InMemoryProductService struct{}
+
 //GetProducts abstracts this from handlers and presents itself as a service
-func GetProducts() (Products, error) {
+func (InMemoryProductService) GetProducts() (Products, error) {
 	return ProductList, nil
 }
 
 //SaveProduct saves product and returns its id
-func SaveProduct(p *Product) (int, error) {
+func (InMemoryProductService) SaveProduct(p *Product) (int, error) {
 	p.ID = len(ProductList) + 1
 	ProductList = append(ProductList, p)
 	return p.ID, nil
