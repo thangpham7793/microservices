@@ -20,12 +20,14 @@ func main() {
 
 	// customise dependency (anything that implements the interface, in this case io.Writer)
 	l := log.New(os.Stdout, "product-api\t", log.LstdFlags)
-	m := data.InMemoryProductService{}
+
+	//*InMemoryProductService satisfies ProductService interface and is replaceable by other implementations
+	var sv data.ProductService = &data.InMemoryProductService{}
 
 	//dependency injections allow for reusable dependencies (logger for example)
 	hh := handlers.NewHello(l)
 	gb := handlers.NewGoodbye(l)
-	ph := handlers.NewProducts(l, m)
+	ph := handlers.NewProducts(l, &sv)
 
 	// like the controller/router in MVC
 	sm := http.NewServeMux()
