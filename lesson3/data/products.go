@@ -23,7 +23,7 @@ type Product struct {
 //ProductService defines all methods required
 type ProductService interface {
 	GetProducts() (Products, error)
-	SaveProduct(p *Product) (int, error)
+	SaveProduct(*Product) (int, error)
 }
 
 //Products define a slice of pointers to product
